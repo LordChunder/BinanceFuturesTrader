@@ -1,12 +1,15 @@
 import com.binance.client.RequestOptions;
 import com.binance.client.SyncRequestClient;
 import com.binance.client.model.enums.CandlestickInterval;
+import com.binance.client.model.market.PriceChangeTicker;
 
 import javax.swing.*;
+import java.util.List;
 
 public class BinanceHandler {
     public RequestOptions options;
     public SyncRequestClient syncRequestClient;
+
 
 
 
@@ -23,6 +26,11 @@ public class BinanceHandler {
             new PopupNoticiation().ShowNotification("Logged in without API");
         }
 
-        new MainForm();
+
+    }
+
+    public float GetLastPrice(String name){
+        List<PriceChangeTicker> price =  syncRequestClient.get24hrTickerPriceChange(name);
+        return price.get(0).getLastPrice().floatValue();
     }
 }
