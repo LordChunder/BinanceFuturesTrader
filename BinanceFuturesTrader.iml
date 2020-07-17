@@ -9,5 +9,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="binance-client" />
     <orderEntry type="library" name="org.jbundle.util.osgi:org.jbundle.util.osgi:1.2.0" level="project" />
+    <orderEntry type="module" module-name="binance-api-client" />
   </component>
 </module>

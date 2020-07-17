@@ -8,6 +8,9 @@ public class LoginDialog extends JDialog {
     private JCheckBox checkBox;
 
 
+    String apiKey = "MVi3iQizEghuc9vDZaNWEgXBgNlJbkA3RW5rgAYIlHhhC3LM6T5Mf60115uKQ5im";
+    String secretKey = "S3vaz0Cvtw3psovZ5TTDd4lsGyP5vxvuYg7tPdt7AUYTn7c7wki3axfL7Xpsd3Xf";
+
     static BinanceHandler binanceHandler;
     public LoginDialog() {
         setContentPane(contentPane);
@@ -53,7 +56,7 @@ public class LoginDialog extends JDialog {
     private void onOK() {
         // add your code here
         if(checkBox.isSelected()){
-            binanceHandler.LoginAndInitialize("","");
+            binanceHandler.LoginAndInitialize(apiKey,secretKey);
         }
 
 
