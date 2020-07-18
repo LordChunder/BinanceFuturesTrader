@@ -68,8 +68,9 @@ public class DataHandler {
 
 
         if (mainForm.graphHandler.lineChart != null && mainForm.graphHandler.lineChart.getTitle().getText() == marketPairName&& dataset.getColumnCount() >0) {
-            mainForm.graphHandler.UpdateDataset(GetLastNDataPoints(dataset,3));
-            mainForm.graphHandler.ScaleGraph(binanceHandler.minValue,binanceHandler.maxValue);
+            mainForm.graphHandler.UpdateDataset(GetLastNDataPoints(dataset,30));
+            Double[] scale = GetGraphScale(dataset);
+            mainForm.graphHandler.ScaleGraph(scale[0],scale[1]);
         } else {
             mainForm.CreateChart(dataset, marketPairName);
 
@@ -97,29 +98,44 @@ public class DataHandler {
             nData.addValue(data.getValue(0,i),"Price",data.getColumnKey(i));
         }
         DefaultCategoryDataset nRevData = new DefaultCategoryDataset();
-        if(nData.getColumnCount() < 3) { n = nData.getColumnCount();}
-        else n = 3;
+        if(nData.getColumnCount() < n) { n = nData.getColumnCount();}
+
         n-=1;
         for (int i = n; i >=0 ; i--) {
             nRevData.addValue(nData.getValue(0,i),"Price",nData.getColumnKey(i));
         }
         return  nRevData;
     }
-    Float[] GetGraphScale(DefaultCategoryDataset data){
-        Float[] scale = new Float[2];
+    Double[] GetGraphScale(DefaultCategoryDataset data){
+        Double[] scale = {0.0,0.0};
         List<Double> values = new ArrayList<Double>();
 
         for (int i = 0; i < data.getColumnCount(); i++) {
             values.add((Double)(data.getValue(0,i)));
         }
+
+        Double last = 0.0;
         Double average = 0.0;
         Double sum = 0.0;
         for (Double value:values
              ) {
+            if(value > last) scale[1] = value;
+            if(value < last) scale[0] = value;
             sum +=value;
+            last = value;
         }
-        average = sum/D
+        average = sum/values.size();
+        sum =0.0;
+        for (Double value:values
+           ) {
+            sum += Math.pow((value - average),2);
+        }
+        Double stdDev = Math.sqrt(sum/values.size());
+        stdDev/=100;
+        scale[0] = scale[0] - scale[0]*stdDev;  scale[1] = scale[1] + scale[1]*stdDev;
+        return scale;
     }
+
 
 
 

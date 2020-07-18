@@ -45,9 +45,11 @@ public class GraphHandler {
         ((CategoryPlot)lineChart.getPlot()).setDataset(dataset);
     }
 
-    public void ScaleGraph(float min, float max){
+    public void ScaleGraph(Double min, Double max){
+        System.out.println(min +" "+max);
         if(min !=999999999 && max !=0) {
-            lineChart.getCategoryPlot().getRangeAxis().setRange(min - min * .01f, max + max * .01f);
+
+            lineChart.getCategoryPlot().getRangeAxis().setRange(min,max);
         }
     }
 
