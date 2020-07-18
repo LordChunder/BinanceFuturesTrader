@@ -1,3 +1,5 @@
+import org.jfree.data.category.DefaultCategoryDataset;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -12,6 +14,9 @@ public class MainForm {
     private JLabel priceLabel;
     private JPanel dataPanel;
     private JComboBox<String> marketPairComboBox;
+    private JPanel graphPanel;
+    GraphHandler graphHandler = new GraphHandler();
+
     static BinanceHandler binanceHandler = new BinanceHandler();
 
     static public MainForm instance;
@@ -56,11 +61,20 @@ public class MainForm {
         new LoginDialog().DisplayDialog(binanceHandler);
         new DataHandler(instance,binanceHandler);
 
+
+
     }
 
      public void PopulateComboBox(){
         String[] pairs = {"BTCUSDT","ETHUSDT"};
         marketPairComboBox.setModel(new DefaultComboBoxModel<String>(pairs));
+
+
      }
 
+
+     public void CreateChart(DefaultCategoryDataset dataset, String name){
+         graphHandler.CreateLineChart(graphPanel,name,dataset);
+
+     }
 }

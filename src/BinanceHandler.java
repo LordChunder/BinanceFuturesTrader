@@ -7,15 +7,17 @@ import com.binance.api.client.*;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.sql.Timestamp;
 
 public class BinanceHandler {
     public RequestOptions options;
     public SyncRequestClient syncRequestClient;
     BinanceApiWebSocketClient client;
+    DataHandler dataHandler;
 
 
-
-    public float currentPrice;
+    public float currentPrice = 0, maxValue = 0, minValue = 999999999 ;
+    public Timestamp time = new Timestamp(System.currentTimeMillis());
     String selectedPair = "BTCUSDT";
     Closeable clientCloseable;
 
@@ -49,6 +51,11 @@ public class BinanceHandler {
             @Override
             public void onResponse(final AggTradeEvent response) {
                 currentPrice= Float.parseFloat(response.getPrice());
+                time = new Timestamp(response.getTradeTime());
+                dataHandler.dataset.addValue(currentPrice,"Price",dataHandler.ParseTime(time));
+
+                if(currentPrice > maxValue) maxValue=currentPrice;
+                if(currentPrice < minValue) minValue = currentPrice;
             }
 
             @Override
