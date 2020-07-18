@@ -1,8 +1,7 @@
-import com.binance.api.client.domain.event.AggTradeEvent;
-import com.binance.client.RequestOptions;
-import com.binance.client.SyncRequestClient;
-import com.binance.api.client.*;
 
+import com.binance.api.client.*;
+import com.binance.api.client.domain.event.AggTradeEvent;
+import com.binance.client.*;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -46,23 +45,23 @@ public class BinanceHandler {
     public void GetListeners(String name) {
         System.out.println("Stream made for "+name);
         selectedPair = name;
-       clientCloseable= client.onAggTradeEvent(name.toLowerCase(), new BinanceApiCallback<AggTradeEvent>() {
-            @Override
-            public void onResponse(final AggTradeEvent response) {
-                currentPrice= Float.parseFloat(response.getPrice());
-                time = new Timestamp(response.getTradeTime());
-                dataHandler.dataset.addValue(currentPrice,"Price",dataHandler.ParseTime(time));
+       clientCloseable= client.onAggTradeEvent(name.toLowerCase(), new BinanceApiCallback<>() {
+           @Override
+           public void onResponse(final AggTradeEvent response) {
+               currentPrice = Float.parseFloat(response.getPrice());
+               time = new Timestamp(response.getTradeTime());
+               dataHandler.dataset.addValue(currentPrice, "Price", dataHandler.ParseTime(time));
 
-                if(currentPrice > maxValue) maxValue=currentPrice;
-                if(currentPrice < minValue) minValue = currentPrice;
-            }
+               if (currentPrice > maxValue) maxValue = currentPrice;
+               if (currentPrice < minValue) minValue = currentPrice;
+           }
 
-            @Override
-            public void onFailure(final Throwable cause) {
-                System.err.println("Web socket failed");
-                cause.printStackTrace(System.err);
-            }
-        });
+           @Override
+           public void onFailure(final Throwable cause) {
+               System.err.println("Web socket failed");
+               cause.printStackTrace(System.err);
+           }
+       });
 
     }
 
