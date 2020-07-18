@@ -1,4 +1,3 @@
-import com.binance.api.client.constant.BinanceApiConstants;
 import com.binance.api.client.domain.event.AggTradeEvent;
 import com.binance.client.RequestOptions;
 import com.binance.client.SyncRequestClient;
