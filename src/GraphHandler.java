@@ -8,9 +8,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.CandlestickRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.xy.DefaultOHLCDataset;
-import org.jfree.data.xy.OHLCDataItem;
-import org.jfree.data.xy.OHLCDataset;
+import org.jfree.data.xy.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,10 +21,10 @@ public class GraphHandler {
     JFreeChart lineChart;
 
 
-    public void CreateLineChart(JPanel panel, String pair, DefaultCategoryDataset dataset){
+    public void CreateLineChart(JPanel panel, String pair, XYDataset dataset){
         panel.removeAll();
         panel.setLayout(new java.awt.BorderLayout());
-        lineChart = ChartFactory.createLineChart(
+        lineChart = ChartFactory.createXYLineChart(
                 pair,
                 "Time","Price",
                 dataset,
@@ -36,21 +34,41 @@ public class GraphHandler {
 
         ChartPanel chartPanel = new ChartPanel( lineChart );
 
-        //chartPanel.setPreferredSize( new java.awt.Dimension( 560 , 367 ) );
+        lineChart.getXYPlot().getDomainAxis().setTickLabelsVisible(false);
+        lineChart.setBackgroundPaint(Color.getColor("BBBBBB"));
         panel.add(chartPanel);
         panel.validate();
     }
 
-    public void UpdateDataset(DefaultCategoryDataset dataset){
-        ((CategoryPlot)lineChart.getPlot()).setDataset(dataset);
+    public void UpdateDataset(XYDataset dataset){
+        lineChart.getXYPlot().setDataset(dataset);
+
+        //lineChart.getXYPlot().getRangeAxis().setFixedAutoRange(DataHandler.GetScale(dataset));
+        ScaleGraph(dataset);
+
     }
 
-    public void ScaleGraph(Double min, Double max){
-        System.out.println(min +" "+max);
-        if(min !=999999999 && max !=0) {
+    public void ScaleGraph(XYDataset dataset){
 
-            lineChart.getCategoryPlot().getRangeAxis().setRange(min,max);
+        List<Double> values = new ArrayList();
+        XYSeries series = ((XYSeriesCollection) dataset).getSeries(0);
+        if(series.getItemCount() <=1) return;
+        for (int i = 0; i < series.getItemCount(); i++) {
+            values.add((double)series.getY(i));
         }
+        double max = 0; double min = 99999999;
+
+        for (double num:values
+        ) {
+
+            if(num > max) max = num;
+            if(num < min) min = num;
+
+        }
+
+
+        lineChart.getXYPlot().getRangeAxis().setRange(min-min*.01,max+max*.01);
+
     }
 
 }
